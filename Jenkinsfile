@@ -1,7 +1,19 @@
 pipeline {
-    agent any
+    agent {
+        docker { 
+            image 'maven:3.8.4-jdk-11' 
+        }
+    }
     
     stages {
+        stage("Audit Tools") {
+            steps {
+                sh '''
+                    java -version
+                    mvn -v
+                '''
+            }  
+        }
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/kylezenarosa/jgsu-spring-petclinic.git', branch: 'main'
@@ -11,7 +23,7 @@ pipeline {
         
         stage('Build') {
             steps {
-                  bat 'mvn package'
+                  sh 'mvn package'
             }
             post {
                 success {
